@@ -2,6 +2,7 @@ import streamlit as st
 from langchain_experimental.agents import create_csv_agent
 from langchain.llms import OpenAI
 from dotenv import load_dotenv
+from vector import process_csv_to_chroma
 
 
 def main():
@@ -18,6 +19,8 @@ def main():
     # test if csv is loaded
     if user_csv is not None :
         user_question = st.text_input("Ask a question about your CSV:")
+        #upload csv to vectordb
+        process_csv_to_chroma(user_csv)
 
         llm = OpenAI(temperature=0)
         #initializing our agent
