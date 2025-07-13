@@ -14,8 +14,8 @@ def main():
     load_dotenv()
 
     #streamlit front-end setup
-    st.set_page_config(page_title="Ask you CSV 📈")
-    st.header("Ask you CSV 📈")
+    st.set_page_config(page_title="AI CSV Agent + RAG 📈")
+    st.header("Ask your CSV - with Semantic RAG + Agent 📈")
 
     user_csv = st.file_uploader("Upload your CSV file", type="csv")
 
