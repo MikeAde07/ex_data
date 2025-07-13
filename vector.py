@@ -8,6 +8,7 @@ import pandas as pd
 
 
 def process_to_csv_chroma(file, persist_directory="./chroma_db"):
+    """Function to process the csv and upload the csv to the vector database"""
     df = pd.read_csv(file)
 
     #embedding model
@@ -44,12 +45,12 @@ def process_to_csv_chroma(file, persist_directory="./chroma_db"):
 
     if add_documents:
         vector_store.add_documents(documents=documents, ids=ids)
-        #save vector database to disk
-        vector_store.persist()
 
-
+#Function to create the retriever
 def get_vector_retriever(persist_directory="./chroma_db"):
+    """Function to create the retriever to retrieve information from the vector database"""
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+    db_location = "./chroma_db"
     vector_store = Chroma(
         collection_name="csv_data",
         persist_directory = db_location,
@@ -58,9 +59,7 @@ def get_vector_retriever(persist_directory="./chroma_db"):
     # look up documents and pass to prompt LLM
     retriever = vector_store.as_retriever(
         #specifies number of documents we want to look up
-        search_kwargs={
-            "k": 5,
-            "score_threshold": 0.4} # lower threshold for variety
+        search_kwargs={"k": 5}
     )
     return retriever
     
