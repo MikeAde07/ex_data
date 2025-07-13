@@ -29,8 +29,38 @@ def process_to_csv_chroma(file, persist_directory="./chroma_db"):
             metadata = {"row_index": i}
             document = Document(
                 page_content=row_text,
-                metadata=metadata
+                metadata=metadata,
+                id=str(i)
             )
             documents.append(document)
+            ids.append(str(i))
+    
+    # Add this to the vector store
+    vector_store = Chroma(
+        collection_name="csv_data",
+        persist_directory = db_location,
+        embedding_function = embedding
+    )
 
-    return documents
+    if add_documents:
+        vector_store.add_documents(documents=documents, ids=ids)
+        #save vector database to disk
+        vector_store.persist()
+
+
+def get_vector_retriever(persist_directory="./chroma_db"):
+    embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+    vector_store = Chroma(
+        collection_name="csv_data",
+        persist_directory = db_location,
+        embedding_function = embedding
+    )
+    # look up documents and pass to prompt LLM
+    retriever = vector_store.as_retriever(
+        #specifies number of documents we want to look up
+        search_kwargs={
+            "k": 5,
+            "score_threshold": 0.4} # lower threshold for variety
+    )
+    return retriever
+    
