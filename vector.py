@@ -67,23 +67,3 @@ def get_vector_retriever(persist_directory="./chroma_db"):
     )
     return retriever
     
-#def get_vector_store(persist_directory="./chroma_db"):
- #   """Vector store instance"""
- #   embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-  #  db_location = "./chroma_db"
-   # vector_store = Chroma(
-    #    collection_name="csv_data",
-     #   persist_directory = db_location,
-      #  embedding_function = embedding
-    #)
-    #return vector_store
-
-#def get_conversation_chain(vectorstore):
- #   llm = ChatOpenAI()
-  #  memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-   # conversation_chain = ConversationalRetrievalChain.from_llm(
-    #    llm=llm,
-     #   retriever=vectorstore.as_retriever(),
-      #  memory=memory
-    #)
-    #return conversation_chain

@@ -22,9 +22,7 @@ def main():
 
     if st.button("🧹 Clear Chat", key="clear_chat_button"):
         st.session_state.clear()
-        #st.session_state.chat_history = []
-        #st.session_state.agent_memory = None
-        #st.experimental_rerun()
+        
 
     #session state for chat memory and UI
     if "chat_history" not in st.session_state:
@@ -36,10 +34,6 @@ def main():
             return_messages=True
         )
         
-    #clear button
-    #clear_chat = st.button("🧹 Clear Chat")
-
-    
 
     #Upload csv
     user_csv = st.file_uploader("Upload your CSV file", type="csv")
@@ -108,14 +102,7 @@ def main():
             else:
                 role="Agent"
                 st.write(bot_template.replace("{{MSG}}", msg["content"]), unsafe_allow_html=True)
-            #st.markdown(f"**{role}:** {msg['content']}")
-
         
-            #st.write(response)
-            #if "conversation" not in st.session_state:
-             #   st.session_state.conversation = None
-            #add session state to make the conversation persistent
-            #st.session_state.conversation = get_conversation_chain(vector_store)
             
 
 if __name__ == "__main__":
