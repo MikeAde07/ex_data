@@ -3,6 +3,9 @@
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
+from langchain.chat_models import ChatOpenAI
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationalRetrievalChain
 import os
 import pandas as pd
 
@@ -45,6 +48,7 @@ def process_to_csv_chroma(file, persist_directory="./chroma_db"):
 
     if add_documents:
         vector_store.add_documents(documents=documents, ids=ids)
+        vector_store.persist()
 
 #Function to create the retriever
 def get_vector_retriever(persist_directory="./chroma_db"):
@@ -63,3 +67,23 @@ def get_vector_retriever(persist_directory="./chroma_db"):
     )
     return retriever
     
+#def get_vector_store(persist_directory="./chroma_db"):
+ #   """Vector store instance"""
+ #   embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+  #  db_location = "./chroma_db"
+   # vector_store = Chroma(
+    #    collection_name="csv_data",
+     #   persist_directory = db_location,
+      #  embedding_function = embedding
+    #)
+    #return vector_store
+
+#def get_conversation_chain(vectorstore):
+ #   llm = ChatOpenAI()
+  #  memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
+   # conversation_chain = ConversationalRetrievalChain.from_llm(
+    #    llm=llm,
+     #   retriever=vectorstore.as_retriever(),
+      #  memory=memory
+    #)
+    #return conversation_chain
