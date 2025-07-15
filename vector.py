@@ -11,6 +11,14 @@ import os
 import pandas as pd
 
 
+#resuable client settings for in-memory
+IN_MEMORY_SETTINGS = Settings(
+    anonymized_telemetry=False, 
+    chroma_api_impl="local",
+    allow_reset=True,
+    is_persistent=False,
+)
+
 def process_to_csv_chroma(df):
     """Function to process the csv and upload the csv to the vector database"""
 
@@ -47,9 +55,8 @@ def process_to_csv_chroma(df):
     # Add this to the vector store
     vector_store = Chroma(
         collection_name="csv_data",
-        persist_directory = "",
         embedding_function = embedding,
-        client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory="")
+        client_settings=IN_MEMORY_SETTINGS
     )
 
     #if add_documents:
@@ -66,9 +73,8 @@ def get_vector_retriever():
     #db_location = "/app/chroma_db"
     vector_store = Chroma(
         collection_name="csv_data",
-        persist_directory = "",
         embedding_function = embedding,
-        client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory="")
+        client_settings=IN_MEMORY_SETTINGS
     )
     # look up documents and pass to prompt LLM
     retriever = vector_store.as_retriever(
