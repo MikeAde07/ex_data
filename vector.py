@@ -11,21 +11,24 @@ import tempfile
 import os
 import pandas as pd
 
+#use the writeable directory in Render or Docker
+CHROMA_DB_DIR = "/data/chroma_db"
 
-def process_to_csv_chroma(df, persist_directory="/app/chroma_db"):
+
+def process_to_csv_chroma(df, persist_directory=CHROMA_DB_DIR):
     """Function to process the csv and upload the csv to the vector database"""
 
     #embedding model
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
 
     #vectorstore database location
-    db_location = "/app/chroma_db"
+    #db_location = "/app/chroma_db"
     #ensures we don't have duplicate info being vectorized
-    add_documents = not os.path.exists(db_location)
+    add_documents = not os.path.exists(persist_directory)
 
     #log/print statements
-    print("Checking vector DB directory:", db_location)
-    print("Exists?", os.path.exists(db_location))
+    print("Checking vector DB directory:", persist_directory)
+    print("Exists?", os.path.exists(persist_directory))
     print("Will add documents?", add_documents)
 
     if add_documents :
@@ -49,7 +52,7 @@ def process_to_csv_chroma(df, persist_directory="/app/chroma_db"):
     vector_store = Chroma(
         collection_name="csv_data",
         embedding_function = embedding,
-        persist_directory=db_location,
+        persist_directory=persist_directory,
     )
 
     if add_documents:
@@ -57,10 +60,10 @@ def process_to_csv_chroma(df, persist_directory="/app/chroma_db"):
         print("First document:", documents[0].page_content if documents else "None")
         vector_store.add_documents(documents=documents, ids=ids)
         vector_store.persist()
-        print("✅ Vector DB persisted to:", db_location)
+        print("✅ Vector DB persisted to:", persist_directory)
 
 #Function to create the retriever
-def get_vector_retriever(persist_directory="/app/chroma_db"):
+def get_vector_retriever(persist_directory=CHROMA_DB_DIR):
     """Function to create the retriever to retrieve information from the vector database"""
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
     #db_location = "/app/chroma_db"
