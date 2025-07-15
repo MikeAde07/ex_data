@@ -17,7 +17,7 @@ def process_to_csv_chroma(df, persist_directory="/app/chroma_db"):
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
 
     #vectorstore database location
-    db_location = "./chroma_db"
+    db_location = "/app/chroma_db"
     #ensures we don't have duplicate info being vectorized
     add_documents = not os.path.exists(db_location)
 
@@ -61,7 +61,7 @@ def process_to_csv_chroma(df, persist_directory="/app/chroma_db"):
 def get_vector_retriever(persist_directory="/app/chroma_db"):
     """Function to create the retriever to retrieve information from the vector database"""
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-    db_location = "./chroma_db"
+    db_location = "/app/chroma_db"
     vector_store = Chroma(
         collection_name="csv_data",
         persist_directory = db_location,
