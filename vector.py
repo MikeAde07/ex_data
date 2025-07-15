@@ -12,34 +12,25 @@ import os
 import pandas as pd
 
 
-#resuable client settings for in-memory
-IN_MEMORY_SETTINGS = Settings(
-    anonymized_telemetry=False, 
-    chroma_api_impl="local",
-    allow_reset=True,
-    is_persistent=False,
-    persist_directory=tempfile.mkdtemp()
-)
-
-def process_to_csv_chroma(df):
+def process_to_csv_chroma(df, persist_directory="/app/chroma_db"):
     """Function to process the csv and upload the csv to the vector database"""
 
     #embedding model
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
 
     #vectorstore database location
-    #db_location = "/app/chroma_db"
+    db_location = "/app/chroma_db"
     #ensures we don't have duplicate info being vectorized
-    #add_documents = not os.path.exists(db_location)
+    add_documents = not os.path.exists(db_location)
 
     #log/print statements
-    #print("Checking vector DB directory:", db_location)
-    #print("Exists?", os.path.exists(db_location))
-    #print("Will add documents?", add_documents)
+    print("Checking vector DB directory:", db_location)
+    print("Exists?", os.path.exists(db_location))
+    print("Will add documents?", add_documents)
 
-    #if add_documents :
-    documents = []
-    ids = []
+    if add_documents :
+        documents = []
+        ids = []
 
     for i, row in df.iterrows():
             # Build readable row summary
@@ -58,27 +49,25 @@ def process_to_csv_chroma(df):
     vector_store = Chroma(
         collection_name="csv_data",
         embedding_function = embedding,
-        persist_directory=None,
-        client_settings=IN_MEMORY_SETTINGS
+        persist_directory=db_location,
     )
 
-    #if add_documents:
-    print("Number of documents prepared:", len(documents))
-    print("First document:", documents[0].page_content if documents else "None")
-    vector_store.add_documents(documents=documents, ids=ids)
-        #vector_store.persist()
-    #print("✅ Vector DB persisted to:", db_location)
+    if add_documents:
+        print("Number of documents prepared:", len(documents))
+        print("First document:", documents[0].page_content if documents else "None")
+        vector_store.add_documents(documents=documents, ids=ids)
+        vector_store.persist()
+        print("✅ Vector DB persisted to:", db_location)
 
 #Function to create the retriever
-def get_vector_retriever():
+def get_vector_retriever(persist_directory="/app/chroma_db"):
     """Function to create the retriever to retrieve information from the vector database"""
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
     #db_location = "/app/chroma_db"
     vector_store = Chroma(
         collection_name="csv_data",
         embedding_function = embedding,
-        persist_directory=None,
-        client_settings=IN_MEMORY_SETTINGS
+        persist_directory=persist_directory
     )
     # look up documents and pass to prompt LLM
     retriever = vector_store.as_retriever(
