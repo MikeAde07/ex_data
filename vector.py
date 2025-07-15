@@ -14,6 +14,11 @@ import pandas as pd
 #use the writeable directory in Render or Docker
 CHROMA_DB_DIR = "/data/chroma_db"
 
+CHROMA_SETTINGS = Settings(
+    anonymized_telemetry=False,
+    is_persistent=True,
+    persist_directory=CHROMA_DB_DIR
+)
 
 def process_to_csv_chroma(df, persist_directory=CHROMA_DB_DIR):
     """Function to process the csv and upload the csv to the vector database"""
@@ -53,6 +58,7 @@ def process_to_csv_chroma(df, persist_directory=CHROMA_DB_DIR):
         collection_name="csv_data",
         embedding_function = embedding,
         persist_directory=persist_directory,
+        client_settings=CHROMA_SETTINGS
     )
 
     if add_documents:
@@ -70,7 +76,8 @@ def get_vector_retriever(persist_directory=CHROMA_DB_DIR):
     vector_store = Chroma(
         collection_name="csv_data",
         embedding_function = embedding,
-        persist_directory=persist_directory
+        persist_directory=persist_directory,
+        client_settings=CHROMA_SETTINGS
     )
     # look up documents and pass to prompt LLM
     retriever = vector_store.as_retriever(
