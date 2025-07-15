@@ -6,6 +6,7 @@ from langchain_core.documents import Document
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
+from chromadb.config import Settings
 import os
 import pandas as pd
 
@@ -47,7 +48,8 @@ def process_to_csv_chroma(df, persist_directory="/app/chroma_db"):
     vector_store = Chroma(
         collection_name="csv_data",
         persist_directory = db_location,
-        embedding_function = embedding
+        embedding_function = embedding,
+        client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory=db_location)
     )
 
     if add_documents:
@@ -65,7 +67,8 @@ def get_vector_retriever(persist_directory="/app/chroma_db"):
     vector_store = Chroma(
         collection_name="csv_data",
         persist_directory = db_location,
-        embedding_function = embedding
+        embedding_function = embedding,
+        client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory=db_location)
     )
     # look up documents and pass to prompt LLM
     retriever = vector_store.as_retriever(
