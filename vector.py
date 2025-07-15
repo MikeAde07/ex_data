@@ -12,7 +12,8 @@ import os
 import pandas as pd
 
 #use the writeable directory in Render or Docker
-CHROMA_DB_DIR = "/data/chroma_db"
+#CHROMA_DB_DIR = "/data/chroma_db"
+CHROMA_DB_DIR = "/tmp/chroma_db"
 
 CHROMA_SETTINGS = Settings(
     anonymized_telemetry=False,
