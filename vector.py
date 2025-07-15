@@ -31,9 +31,9 @@ def process_to_csv_chroma(df, persist_directory=CHROMA_DB_DIR):
     print("Exists?", os.path.exists(persist_directory))
     print("Will add documents?", add_documents)
 
-    if add_documents :
-        documents = []
-        ids = []
+    
+    documents = []
+    ids = []
 
     for i, row in df.iterrows():
             # Build readable row summary
