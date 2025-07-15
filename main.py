@@ -41,6 +41,9 @@ def main():
     # test if csv is loaded
     if user_csv is not None :
         user_question = st.text_input("Ask a question about your CSV:")
+        #Log statement
+        st.write("✅ File received in Streamlit.")
+        print("Received file:", user_csv.name)
 
         #welcome message
         if not st.session_state.chat_history:
@@ -48,8 +51,14 @@ def main():
             st.write(bot_template.replace("{{MSG}}", "Hello!"), unsafe_allow_html=True)
 
 
+        #read csv file and convert to dataframe
+        df = pd.read_csv(user_csv)
+        print("✅ Loaded CSV DataFrame in main.py")
+        print("DataFrame shape:", df.shape)
+        print("DataFrame head:\n", df.head())
+
         #upload csv to vectordb
-        process_to_csv_chroma(user_csv)
+        process_to_csv_chroma(df)
         retriever = get_vector_retriever()
 
         #Reset file pointer before reading again
@@ -57,6 +66,8 @@ def main():
 
         #Load CSV into DataFrame for code tool
         df = pd.read_csv(user_csv)
+        print(f"Uploaded CSV file: {user_csv.name}")
+        print(df.head())
 
         #RAG Tool
         def rag_tool_fn(query: str) -> str:

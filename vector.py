@@ -10,9 +10,8 @@ import os
 import pandas as pd
 
 
-def process_to_csv_chroma(file, persist_directory="./chroma_db"):
+def process_to_csv_chroma(df, persist_directory="/app/chroma_db"):
     """Function to process the csv and upload the csv to the vector database"""
-    df = pd.read_csv(file)
 
     #embedding model
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
@@ -21,6 +20,11 @@ def process_to_csv_chroma(file, persist_directory="./chroma_db"):
     db_location = "./chroma_db"
     #ensures we don't have duplicate info being vectorized
     add_documents = not os.path.exists(db_location)
+
+    #log/print statements
+    print("Checking vector DB directory:", db_location)
+    print("Exists?", os.path.exists(db_location))
+    print("Will add documents?", add_documents)
 
     if add_documents :
         documents = []
@@ -47,11 +51,14 @@ def process_to_csv_chroma(file, persist_directory="./chroma_db"):
     )
 
     if add_documents:
+        print("Number of documents prepared:", len(documents))
+        print("First document:", documents[0].page_content if documents else "None")
         vector_store.add_documents(documents=documents, ids=ids)
         vector_store.persist()
+        print("✅ Vector DB persisted to:", db_location)
 
 #Function to create the retriever
-def get_vector_retriever(persist_directory="./chroma_db"):
+def get_vector_retriever(persist_directory="/app/chroma_db"):
     """Function to create the retriever to retrieve information from the vector database"""
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
     db_location = "./chroma_db"
