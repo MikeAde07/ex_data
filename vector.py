@@ -11,62 +11,62 @@ import os
 import pandas as pd
 
 
-def process_to_csv_chroma(df, persist_directory="/app/chroma_db"):
+def process_to_csv_chroma(df):
     """Function to process the csv and upload the csv to the vector database"""
 
     #embedding model
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
 
     #vectorstore database location
-    db_location = "/app/chroma_db"
+    #db_location = "/app/chroma_db"
     #ensures we don't have duplicate info being vectorized
-    add_documents = not os.path.exists(db_location)
+    #add_documents = not os.path.exists(db_location)
 
     #log/print statements
-    print("Checking vector DB directory:", db_location)
-    print("Exists?", os.path.exists(db_location))
-    print("Will add documents?", add_documents)
+    #print("Checking vector DB directory:", db_location)
+    #print("Exists?", os.path.exists(db_location))
+    #print("Will add documents?", add_documents)
 
-    if add_documents :
-        documents = []
-        ids = []
+    #if add_documents :
+    documents = []
+    ids = []
 
-        for i, row in df.iterrows():
+    for i, row in df.iterrows():
             # Build readable row summary
-            row_text = " | ".join([f"{col}: {row[col]}" for col in df.columns])
+        row_text = " | ".join([f"{col}: {row[col]}" for col in df.columns])
 
-            metadata = {"row_index": i}
-            document = Document(
-                page_content=row_text,
-                metadata=metadata,
-                id=str(i)
-            )
-            documents.append(document)
-            ids.append(str(i))
+        metadata = {"row_index": i}
+        document = Document(
+            page_content=row_text,
+            metadata=metadata,
+            id=str(i)
+        )
+        documents.append(document)
+        ids.append(str(i))
     
     # Add this to the vector store
     vector_store = Chroma(
         collection_name="csv_data",
-        persist_directory = db_location,
+        #persist_directory = db_location,
         embedding_function = embedding,
         client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory=db_location)
     )
 
-    if add_documents:
-        print("Number of documents prepared:", len(documents))
-        print("First document:", documents[0].page_content if documents else "None")
-        vector_store.add_documents(documents=documents, ids=ids)
-        vector_store.persist()
-        print("✅ Vector DB persisted to:", db_location)
+    #if add_documents:
+    print("Number of documents prepared:", len(documents))
+    print("First document:", documents[0].page_content if documents else "None")
+    vector_store.add_documents(documents=documents, ids=ids)
+        #vector_store.persist()
+    #print("✅ Vector DB persisted to:", db_location)
 
 #Function to create the retriever
-def get_vector_retriever(persist_directory="/app/chroma_db"):
+def get_vector_retriever():
     """Function to create the retriever to retrieve information from the vector database"""
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
     db_location = "/app/chroma_db"
     vector_store = Chroma(
         collection_name="csv_data",
-        persist_directory = db_location,
+        #persist_directory = db_location,
         embedding_function = embedding,
         client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory=db_location)
     )
