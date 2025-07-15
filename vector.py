@@ -7,6 +7,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from chromadb.config import Settings
+import tempfile
 import os
 import pandas as pd
 
@@ -17,6 +18,7 @@ IN_MEMORY_SETTINGS = Settings(
     chroma_api_impl="local",
     allow_reset=True,
     is_persistent=False,
+    persist_directory=tempfile.mkdtemp()
 )
 
 def process_to_csv_chroma(df):
