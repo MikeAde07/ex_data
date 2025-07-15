@@ -56,6 +56,7 @@ def process_to_csv_chroma(df):
     vector_store = Chroma(
         collection_name="csv_data",
         embedding_function = embedding,
+        persist_directory=None,
         client_settings=IN_MEMORY_SETTINGS
     )
 
@@ -74,6 +75,7 @@ def get_vector_retriever():
     vector_store = Chroma(
         collection_name="csv_data",
         embedding_function = embedding,
+        persist_directory=None,
         client_settings=IN_MEMORY_SETTINGS
     )
     # look up documents and pass to prompt LLM
