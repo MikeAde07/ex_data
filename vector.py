@@ -47,9 +47,9 @@ def process_to_csv_chroma(df):
     # Add this to the vector store
     vector_store = Chroma(
         collection_name="csv_data",
-        #persist_directory = db_location,
+        persist_directory = "",
         embedding_function = embedding,
-        client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory=db_location)
+        client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory="")
     )
 
     #if add_documents:
@@ -63,12 +63,12 @@ def process_to_csv_chroma(df):
 def get_vector_retriever():
     """Function to create the retriever to retrieve information from the vector database"""
     embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-    db_location = "/app/chroma_db"
+    #db_location = "/app/chroma_db"
     vector_store = Chroma(
         collection_name="csv_data",
-        #persist_directory = db_location,
+        persist_directory = "",
         embedding_function = embedding,
-        client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory=db_location)
+        client_settings=Settings(anonymized_telemetry=False, chroma_api_impl="local", persist_directory="")
     )
     # look up documents and pass to prompt LLM
     retriever = vector_store.as_retriever(
